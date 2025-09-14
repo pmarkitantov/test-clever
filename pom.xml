@@ -48,13 +48,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.2.6.Final</version>
-        </dependency>
-
-
-        <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
@@ -102,8 +95,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-                    <jvmArguments>-Dio.netty.noUnsafe=true</jvmArguments>
-                    <jvmArguments>--enable-native-access=ALL-UNNAMED</jvmArguments>
+                    <jvmArguments>-Dio.netty.noUnsafe=true --enable-native-access=ALL-UNNAMED</jvmArguments>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
