@@ -72,9 +72,10 @@ public class ImportNotesService {
         return new ImportResult(inserted, updated, skipped);
     }
 
+
     private static String normalizeLogin(String login) {
         String v = (login == null || login.isBlank()) ? "system" : login.trim();
-        return v;
+        return v.toLowerCase();
     }
 
     private Long findActivePatientIdByClientGuid(String clientGuid) {
@@ -107,9 +108,8 @@ public class ImportNotesService {
     }
 
     private int upsertNote(String legacyGuid, Long patientId, Long userId, NoteDto n) {
-
-        Timestamp cdt = parseIsoToTs(n.getCreatedDateTime());
-        Timestamp mdt = parseIsoToTs(n.getModifiedDateTime());
+        Timestamp cdt = parseIsoToTsOrThrow(n.getCreatedDateTime(), "createdDateTime");
+        Timestamp mdt = parseIsoToTsOrThrow(n.getModifiedDateTime(), "modifiedDateTime");
 
         String sql = """
                 INSERT INTO patient_note
@@ -157,8 +157,8 @@ public class ImportNotesService {
 
     private static UUID deterministicLegacyGuid(NoteDto n) {
         String base = (n.getClientGuid() == null ? "" : n.getClientGuid().trim())
-                + "|" + (n.getCreatedDateTime() == null ? "" : n.getCreatedDateTime().trim())
-                + "|" + (n.getComments() == null ? "" : n.getComments().trim());
+                + "|" + (n.getAgency() == null ? "" : n.getAgency().trim())
+                + "|" + (n.getCreatedDateTime() == null ? "" : n.getCreatedDateTime().trim());
         return UUID.nameUUIDFromBytes(base.getBytes());
     }
 
@@ -168,4 +168,17 @@ public class ImportNotesService {
             return "ImportResult{inserted=%d, updated=%d, skipped=%d}".formatted(inserted, updated, skipped);
         }
     }
+
+    private static Timestamp parseIsoToTsOrThrow(String iso, String fieldName) {
+        if (iso == null || iso.isBlank()) {
+            throw new IllegalArgumentException("empty " + fieldName);
+        }
+        try {
+            return Timestamp.from(OffsetDateTime.parse(iso).toInstant());
+        } catch (DateTimeParseException ex) {
+            throw new IllegalArgumentException("bad " + fieldName + ": " + iso, ex);
+        }
+    }
+
+
 }

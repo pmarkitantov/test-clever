@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "patient_note",
@@ -20,10 +21,10 @@ public class PatientNote {
     private Long id;
 
     @Column(name = "created_date_time", nullable = false)
-    private LocalDateTime createdDateTime;
+    private OffsetDateTime createdDateTime;
 
     @Column(name = "last_modified_date_time", nullable = false)
-    private LocalDateTime lastModifiedDateTime;
+    private OffsetDateTime lastModifiedDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_user_id") // FK уже есть в БД

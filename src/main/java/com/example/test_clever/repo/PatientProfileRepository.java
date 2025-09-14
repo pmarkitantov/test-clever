@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface PatientProfileRepository extends JpaRepository<PatientProfile, Long> {
     List<PatientProfile> findAllByStatusIdIn(Collection<Short> statuses);
+    List<PatientProfile> findByOldClientGuidContaining(String guid);
 }
