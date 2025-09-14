@@ -40,12 +40,7 @@ public class LegacyStubService {
         try (InputStream is = resource.getInputStream()) {
             return objectMapper.readValue(is, typeRef);
         } catch (IOException e) {
-            System.err.println("Failed to read " + path + ": " + e.getMessage());
-            try {
-                return (T) Collections.emptyList();
-            } catch (ClassCastException cce) {
-                throw new RuntimeException("Unexpected type for empty fallback", cce);
-            }
+            return (T) Collections.emptyList();
         }
     }
 }
